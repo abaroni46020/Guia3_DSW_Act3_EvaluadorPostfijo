@@ -31,10 +31,38 @@ public class EvaluadorPostfijo {
      */
     static int evaluarPostFija(List<String> expresion) {
         Stack<Integer> pila = new Stack<>();
+       
+        //Declaración de las pilas
+        Stack < String > E = new Stack < String > (); //Pila entrada
+        Stack < String > O = new Stack < String > (); //Pila de operandos
 
-        // TODO: Realiza la evaluación de la expresión en formato postfijo
+        //Añadir post (array) a la Pila de entrada (E)
+        for (int i = expresion.size() - 1; i >= 0; i--) {
+          E.push(expresion.get(i));
+        }
 
-        return pila.pop();
+        //Algoritmo de Evaluación Postfija
+        String operadores = "+-*/%";
+        while (!E.isEmpty()) {
+          if (operadores.contains("" + E.peek())) {
+            O.push(evaluar(E.pop(), O.pop(), O.pop()) + "");
+          }else {
+            O.push(E.pop());
+          }
+        }
+        
+        return Integer.parseInt(O.peek());
+    }
+    
+    private static int evaluar(String op, String n2, String n1) {
+        int num1 = Integer.parseInt(n1);
+        int num2 = Integer.parseInt(n2);
+        if (op.equals("+")) return (num1 + num2);
+        if (op.equals("-")) return (num1 - num2);
+        if (op.equals("*")) return (num1 * num2);
+        if (op.equals("/")) return (num1 / num2);
+        if (op.equals("%")) return (num1 % num2);
+        return 0;
     }
 
     /**
@@ -48,7 +76,8 @@ public class EvaluadorPostfijo {
 
         try {
             List<String> expresion = Token.dividir(linea);
-            System.out.println(evaluarPostFija(expresion));
+            
+            System.out.println("Resultado: "+ evaluarPostFija(expresion));
         }
         catch (Exception e) {
             System.err.printf("Error grave en la expresión: %s", e.getMessage());
