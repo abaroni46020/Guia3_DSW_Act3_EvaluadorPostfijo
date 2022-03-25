@@ -29,59 +29,44 @@ public class EvaluadorPostfijo {
      * @param expresion una lista de elementos con números u operadores
      * @return el resultado de la evaluación de la expresión.
      */
-    static int evaluarPostFija(List<String> expresion) {
-        Stack<Integer> pila = new Stack<>();
-       
-        //Declaración de las pilas
-        Stack < String > E = new Stack < String > (); //Pila entrada
-        Stack < String > O = new Stack < String > (); //Pila de operandos
-
-        //Añadir post (array) a la Pila de entrada (E)
-        for (int i = expresion.size() - 1; i >= 0; i--) {
-          E.push(expresion.get(i));
-        }
-
-        //Algoritmo de Evaluación Postfija
-        String operadores = "+-*/%";
-        while (!E.isEmpty()) {
-          if (operadores.contains("" + E.peek())) {
-            O.push(evaluar(E.pop(), O.pop(), O.pop()) + "");
-          }else {
-            O.push(E.pop());
-          }
-        }
+    static float evaluarPostFija(List<String> expresion) {
+        Stack<Float> pila = new Stack<>();
+        String operators = "+-*/";
         
-        return Integer.parseInt(O.peek());
-    }
-    
-    private static int evaluar(String op, String n2, String n1) {
-        int num1 = Integer.parseInt(n1);
-        int num2 = Integer.parseInt(n2);
-        if (op.equals("+")) return (num1 + num2);
-        if (op.equals("-")) return (num1 - num2);
-        if (op.equals("*")) return (num1 * num2);
-        if (op.equals("/")) return (num1 / num2);
-        if (op.equals("%")) return (num1 % num2);
-        return 0;
+        // TODO: Realiza la evaluación de la expresión en formato postfijo
+        expresion.forEach(value->{
+        	if(operators.contains(value)) {
+        		var val1 = pila.pop();
+        		var val2 = pila.pop();
+        		if(value.equals("+")) pila.add(val1+val2);
+        		if(value.equals("-")) pila.add(val1-val2);
+        		if(value.equals("*")) pila.add(val1*val2);
+        		if(value.equals("/")) pila.add(val1/val2);
+        	}else {
+        		pila.add(Float.parseFloat(value));
+        	}
+        });        
+        
+        return pila.pop();
     }
 
     /**
      * Programa principal
      */
     public static void main(String[] args) {
-        Scanner teclado = new Scanner(System.in);
-
-        System.out.print("> ");
-        String linea = teclado.nextLine();
-
-        try {
-            List<String> expresion = Token.dividir(linea);
-            
-            System.out.println("Resultado: "+ evaluarPostFija(expresion));
-        }
-        catch (Exception e) {
-            System.err.printf("Error grave en la expresión: %s", e.getMessage());
-        }
-
+    	while(true) {
+	        Scanner teclado = new Scanner(System.in);
+	
+	        System.out.print("> ");
+	        String linea = teclado.nextLine();
+	
+	        try {
+	            List<String> expresion = Token.dividir(linea);
+	            System.out.println(evaluarPostFija(expresion));
+	        }catch (Exception e) {
+	            System.err.printf("Error grave en la expresión: %s", e.getMessage());
+	            System.out.print("> ");
+	        }
+    	}
     }
 }
